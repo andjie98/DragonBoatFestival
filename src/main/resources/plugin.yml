@@ -1,0 +1,30 @@
+name: DragonBoatFestival
+version: "1.0.0"
+main: com.andjie.dragonboatfestival.DragonBoatFestivalPlugin
+author: andjie
+description: 端午节活动插件
+softdepend: [Vault, PlayerPoints, PlaceholderAPI]
+commands:
+  duanwu:
+    description: 端午节活动主命令
+    usage: /duanwu help
+    aliases: [dw]
+permissions:
+  duanwu.admin:
+    description: 管理员权限
+    default: op
+  duanwu.sign:
+    description: 每日签到
+    default: true
+  duanwu.shop:
+    description: 打开活动商店
+    default: true
+  duanwu.make:
+    description: 制作粽子
+    default: true
+  duanwu.guide:
+    description: 查看活动指南和状态
+    default: true
+  duanwu.goals:
+    description: 查看全服任务进度
+    default: true

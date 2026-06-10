@@ -1,0 +1,101 @@
+festival:
+  enabled: true
+
+auto-save-seconds: 300
+
+guide:
+  join-message: true
+  join-delay-seconds: 3
+  join-lines:
+    - '&a===== 端午活动开启啦 ====='
+    - '&e第一步：&7挖矿、破坏树叶、收作物、打怪、钓鱼获得端午材料。'
+    - '&e第二步：&7输入 &f/duanwu &7打开活动中心。'
+    - '&e第三步：&7点击“制作粽子”获得节日积分。'
+    - '&e第四步：&7点击“活动商店”兑换奖励。'
+    - '&7如果不知道怎么玩，输入 &f/duanwu guide &7查看新手指南。'
+
+points:
+  normal-zongzi: 1
+  luxury-zongzi: 5
+
+drop:
+  rice: 5
+  leaf: 5
+  jujube: 3
+  meat: 3
+
+make:
+  normal:
+    rice: 5
+    leaf: 2
+  luxury:
+    rice: 10
+    leaf: 5
+    jujube: 3
+    meat: 3
+
+sign-rewards:
+  day1:
+    message: '&a签到成功，获得金币奖励。'
+    commands:
+      - 'eco give {player} 100'
+  day2:
+    points: 5
+    message: '&a签到成功，获得 5 节日积分。'
+  day3:
+    message: '&a签到成功，获得幸运钥匙。'
+    commands:
+      - 'give {player} tripwire_hook 1'
+  day4:
+    exp: 50
+    message: '&a签到成功，获得 50 经验。'
+  day5:
+    message: '&a签到成功，获得限定称号奖励。'
+    commands:
+      - 'title {player} title {"text":"端午安康","color":"green"}'
+
+fish-rewards:
+  rice: 40
+  leaf: 30
+  jujube: 15
+  meat: 10
+  lucky: 4
+  legend: 1
+
+fish-commands:
+  lucky:
+    - 'give {player} chest 1'
+  legend:
+    - 'give {player} diamond 3'
+
+server-goals:
+  make-zongzi:
+    enabled: true
+    name: '全服制作粽子'
+    target: 500
+    complete-message: '&a全服任务完成：&e{name}&a！大家一起做出了 &e{target} &a个粽子！'
+    commands:
+      - 'broadcast 端午全服制作任务完成，大家端午安康！'
+  sign:
+    enabled: true
+    name: '全服每日签到'
+    target: 100
+    complete-message: '&a全服任务完成：&e{name}&a！累计签到达到 &e{target} &a次！'
+    commands:
+      - 'broadcast 端午签到任务完成！'
+  boss-kill:
+    enabled: true
+    name: '击败端午 BOSS'
+    target: 1
+    complete-message: '&d全服任务完成：&e{name}&d！'
+    commands:
+      - 'broadcast 端午 BOSS 已被击败！'
+
+boss:
+  enabled: true
+  type: ZOMBIE
+  name: '&2端午粽王'
+  health: 200
+  reward-points: 20
+  commands:
+    - 'give {player} emerald 3'
