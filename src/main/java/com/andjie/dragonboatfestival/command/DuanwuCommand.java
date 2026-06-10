@@ -309,6 +309,9 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             .replace("{player}", target.getName())
             .replace("{material}", type.getDisplayName())
             .replace("{amount}", String.valueOf(amount)));
+        if (target.isOnline()) {
+            target.sendMessage(Color.text("&a[端午节]&r &a你收到了 &e" + type.getDisplayName() + " x" + amount + " &a（管理员给予）。"));
+        }
         return true;
     }
 
