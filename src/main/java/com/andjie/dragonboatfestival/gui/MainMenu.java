@@ -30,7 +30,9 @@ public class MainMenu implements Listener {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(new MenuHolder("main"), 27, TITLE);
+        MenuHolder holder = new MenuHolder("main");
+        Inventory inventory = Bukkit.createInventory(holder, 27, TITLE);
+        holder.setInventory(inventory);
         inventory.setItem(4, item(Material.BOOK, "&a我的活动状态", statusLore(player)));
         inventory.setItem(10, item(Material.WORKBENCH, "&e制作粽子", list("&7查看材料是否足够", "&7点击打开粽子制作菜单")));
         inventory.setItem(11, item(Material.EMERALD, "&6活动商店", list("&7使用节日积分兑换奖励")));

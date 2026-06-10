@@ -60,7 +60,9 @@ public class ShopMenu implements Listener {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(new MenuHolder("shop"), ROWS * 9, TITLE);
+        MenuHolder holder = new MenuHolder("shop");
+        Inventory inventory = Bukkit.createInventory(holder, ROWS * 9, TITLE);
+        holder.setInventory(inventory);
         drawBorder(inventory);
         drawPlayerStatus(inventory, player);
         drawItems(inventory, player);

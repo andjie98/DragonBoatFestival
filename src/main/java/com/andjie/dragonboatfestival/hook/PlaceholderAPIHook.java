@@ -9,6 +9,7 @@ import com.andjie.dragonboatfestival.DragonBoatFestivalPlugin;
 public class PlaceholderAPIHook {
 
     private final DragonBoatFestivalPlugin plugin;
+    private DuanwuExpansion expansion;
     private boolean enabled;
 
     public PlaceholderAPIHook(DragonBoatFestivalPlugin plugin) {
@@ -23,13 +24,29 @@ public class PlaceholderAPIHook {
         return enabled;
     }
 
+    public DuanwuExpansion getExpansion() {
+        return expansion;
+    }
+
     private void register() {
         try {
-            new DuanwuExpansion(plugin).register();
+            expansion = new DuanwuExpansion(plugin);
+            expansion.register();
             plugin.getLogger().info("已注册 PlaceholderAPI 变量 (duanwu_*)");
         } catch (Exception exception) {
             plugin.getLogger().warning("PlaceholderAPI 注册失败: " + exception.getMessage());
             enabled = false;
+        }
+    }
+
+    public void unregister() {
+        if (expansion != null) {
+            try {
+                expansion.unregister();
+                plugin.getLogger().info("已注销 PlaceholderAPI 变量 (duanwu_*)");
+            } catch (Exception exception) {
+                plugin.getLogger().warning("PlaceholderAPI 注销失败: " + exception.getMessage());
+            }
         }
     }
 }

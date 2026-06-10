@@ -6,6 +6,7 @@ import org.bukkit.inventory.InventoryHolder;
 public class MenuHolder implements InventoryHolder {
 
     private final String id;
+    private Inventory inventory;
 
     public MenuHolder(String id) {
         this.id = id;
@@ -15,8 +16,12 @@ public class MenuHolder implements InventoryHolder {
         return id;
     }
 
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     @Override
     public Inventory getInventory() {
-        return null;
+        return inventory;
     }
 }

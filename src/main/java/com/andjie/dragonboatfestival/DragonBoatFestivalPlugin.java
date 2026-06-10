@@ -3,16 +3,17 @@ package com.andjie.dragonboatfestival;
 import com.andjie.dragonboatfestival.boss.BossManager;
 import com.andjie.dragonboatfestival.command.DuanwuCommand;
 import com.andjie.dragonboatfestival.data.PlayerDataManager;
+import com.andjie.dragonboatfestival.goal.GoalManager;
 import com.andjie.dragonboatfestival.gui.MainMenu;
 import com.andjie.dragonboatfestival.gui.MakeMenu;
 import com.andjie.dragonboatfestival.gui.ShopMenu;
-import com.andjie.dragonboatfestival.goal.GoalManager;
 import com.andjie.dragonboatfestival.hook.PlaceholderAPIHook;
 import com.andjie.dragonboatfestival.hook.VaultHook;
 import com.andjie.dragonboatfestival.listener.ActivityListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 
@@ -27,6 +28,7 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
     private DuanwuCommand duanwuCommand;
     private PlaceholderAPIHook placeholderAPIHook;
     private VaultHook vaultHook;
+    private BukkitTask autoSaveTask;
     private FileConfiguration messages;
     private FileConfiguration shopConfig;
 
@@ -64,7 +66,7 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         }
 
         long period = Math.max(60L, getConfig().getLong("auto-save-seconds", 300L)) * 20L;
-        getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+        autoSaveTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
             @Override
             public void run() {
                 playerDataManager.saveAll();
@@ -76,6 +78,12 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (autoSaveTask != null) {
+            autoSaveTask.cancel();
+        }
+        if (placeholderAPIHook != null) {
+            placeholderAPIHook.unregister();
+        }
         if (playerDataManager != null) {
             playerDataManager.saveAll();
         }

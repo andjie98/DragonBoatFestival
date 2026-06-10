@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerDataManager {
 
@@ -21,7 +21,7 @@ public class PlayerDataManager {
     public PlayerDataManager(DragonBoatFestivalPlugin plugin) {
         this.plugin = plugin;
         this.dataFolder = new File(plugin.getDataFolder(), "playerdata");
-        this.dataByUuid = new HashMap<UUID, PlayerData>();
+        this.dataByUuid = new ConcurrentHashMap<UUID, PlayerData>();
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
@@ -39,6 +39,13 @@ public class PlayerDataManager {
             data = load(player);
         }
         return data;
+    }
+
+    /**
+     * 只返回已加载的数据，不触发文件读取（线程安全，供 PlaceholderAPI 等异步调用使用）。
+     */
+    public PlayerData getIfLoaded(Player player) {
+        return dataByUuid.get(player.getUniqueId());
     }
 
     public PlayerData load(Player player) {
@@ -79,6 +86,9 @@ public class PlayerDataManager {
 
     public void save(PlayerData data) {
         File file = fileOf(data.getUuid());
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
         FileConfiguration config = new YamlConfiguration();
         config.set("name", data.getName());
         config.set("points", data.getPoints());

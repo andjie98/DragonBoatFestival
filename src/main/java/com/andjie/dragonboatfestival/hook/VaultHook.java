@@ -13,6 +13,7 @@ public class VaultHook {
     private Method withdrawMethod;
     private Method depositMethod;
     private Method balanceMethod;
+    private Method transactionSuccessMethod;
 
     public VaultHook(DragonBoatFestivalPlugin plugin) {
         this.plugin = plugin;
@@ -22,7 +23,7 @@ public class VaultHook {
         }
         try {
             Class<?> economyClass = Class.forName("net.milkbowl.vault.economy.Economy");
-            Class<?> providerClass = Class.forName("net.milkbowl.vault.economy.EconomyResponse");
+            Class<?> economyResponseClass = Class.forName("net.milkbowl.vault.economy.EconomyResponse");
             Object provider = plugin.getServer().getServicesManager().getRegistration(economyClass);
             if (provider == null) {
                 this.enabled = false;
@@ -33,6 +34,7 @@ public class VaultHook {
             this.balanceMethod = economyClass.getMethod("getBalance", org.bukkit.OfflinePlayer.class);
             this.withdrawMethod = economyClass.getMethod("withdrawPlayer", org.bukkit.OfflinePlayer.class, double.class);
             this.depositMethod = economyClass.getMethod("depositPlayer", org.bukkit.OfflinePlayer.class, double.class);
+            this.transactionSuccessMethod = economyResponseClass.getMethod("transactionSuccess");
             this.enabled = true;
         } catch (Exception exception) {
             this.enabled = false;
@@ -61,8 +63,7 @@ public class VaultHook {
         }
         try {
             Object result = withdrawMethod.invoke(economy, player, amount);
-            Method success = result.getClass().getMethod("transactionSuccess");
-            return (boolean) success.invoke(result);
+            return (boolean) transactionSuccessMethod.invoke(result);
         } catch (Exception exception) {
             return false;
         }
@@ -74,8 +75,7 @@ public class VaultHook {
         }
         try {
             Object result = depositMethod.invoke(economy, player, amount);
-            Method success = result.getClass().getMethod("transactionSuccess");
-            return (boolean) success.invoke(result);
+            return (boolean) transactionSuccessMethod.invoke(result);
         } catch (Exception exception) {
             return false;
         }

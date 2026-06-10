@@ -52,13 +52,7 @@ public class ActivityListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                plugin.getPlayerDataManager().unload(player);
-            }
-        });
+        plugin.getPlayerDataManager().unload(event.getPlayer());
     }
 
     @EventHandler
@@ -185,8 +179,7 @@ public class ActivityListener implements Listener {
     }
 
     private boolean isOre(Material material) {
-        String name = material.name();
-        return name.endsWith("_ORE") || material == Material.COAL_ORE || material == Material.QUARTZ_ORE;
+        return material.name().endsWith("_ORE");
     }
 
     private boolean isCrop(Material material) {

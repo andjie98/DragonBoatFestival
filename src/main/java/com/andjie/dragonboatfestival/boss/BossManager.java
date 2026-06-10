@@ -61,8 +61,11 @@ public class BossManager {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("{player}", killer.getName()));
         }
         plugin.getGoalManager().addProgress("boss-kill", 1);
-        plugin.getServer().broadcastMessage(plugin.message("boss-killed")
-            .replace("{player}", killer.getName())
-            .replace("{points}", String.valueOf(points)));
+        String message = plugin.message("boss-killed")
+            .replace("{player}", killer.getName());
+        if (points > 0) {
+            message = message.replace("{points}", String.valueOf(points));
+        }
+        plugin.getServer().broadcastMessage(message);
     }
 }

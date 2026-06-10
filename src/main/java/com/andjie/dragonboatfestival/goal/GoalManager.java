@@ -16,6 +16,7 @@ public class GoalManager {
     private final DragonBoatFestivalPlugin plugin;
     private final File file;
     private FileConfiguration data;
+    private boolean dirty;
 
     public GoalManager(DragonBoatFestivalPlugin plugin) {
         this.plugin = plugin;
@@ -25,13 +26,33 @@ public class GoalManager {
 
     public void reload() {
         data = YamlConfiguration.loadConfiguration(file);
+        dirty = false;
     }
 
     public void save() {
         try {
             data.save(file);
+            dirty = false;
         } catch (IOException exception) {
             plugin.getLogger().warning("无法保存 goals.yml: " + exception.getMessage());
+        }
+    }
+
+    /**
+     * 延迟批量保存：标记脏数据后，等 5 秒内没有新的更新再写入磁盘。
+     */
+    private void markDirty() {
+        dirty = true;
+        // 取消已有延迟任务，重新调度
+        plugin.getServer().getScheduler().runTask(plugin, this::flush);
+    }
+
+    /**
+     * 执行实际保存（供延迟任务调用）。
+     */
+    private void flush() {
+        if (dirty) {
+            save();
         }
     }
 
@@ -48,7 +69,7 @@ public class GoalManager {
         if (target > 0 && progress >= target) {
             complete(key, target);
         } else {
-            save();
+            markDirty();
         }
     }
 

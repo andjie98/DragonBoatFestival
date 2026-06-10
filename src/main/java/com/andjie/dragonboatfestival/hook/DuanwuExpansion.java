@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 /**
  * PlaceholderAPI 扩展 — 提供 %duanwu_*% 变量。
  * 需要服务器安装 PlaceholderAPI 插件。
+ *
+ * <p>注意：onPlaceholderRequest 可能被 PlaceholderAPI 的线程池调用，
+ * 因此使用 getIfLoaded() 避免异步加载玩家数据。</p>
  */
 public class DuanwuExpansion extends PlaceholderExpansion {
 
@@ -36,7 +39,7 @@ public class DuanwuExpansion extends PlaceholderExpansion {
 
     @Override
     public boolean persist() {
-        return true; // 插件重载后保持注册
+        return true;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class DuanwuExpansion extends PlaceholderExpansion {
         if (player == null || params == null) {
             return "";
         }
-        PlayerData data = plugin.getPlayerDataManager().get(player);
+        PlayerData data = plugin.getPlayerDataManager().getIfLoaded(player);
         if (data == null) {
             return "";
         }

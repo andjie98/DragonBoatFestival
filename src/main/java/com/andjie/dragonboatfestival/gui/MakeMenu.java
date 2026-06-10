@@ -32,7 +32,9 @@ public class MakeMenu implements Listener {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(new MenuHolder("make"), 27, TITLE);
+        MenuHolder holder = new MenuHolder("make");
+        Inventory inventory = Bukkit.createInventory(holder, 27, TITLE);
+        holder.setInventory(inventory);
         inventory.setItem(11, createZongziItem(player, "normal", "&a普通粽子", Material.BREAD));
         inventory.setItem(15, createZongziItem(player, "luxury", "&6豪华粽子", Material.CAKE));
         player.openInventory(inventory);
@@ -110,7 +112,6 @@ public class MakeMenu implements Listener {
             return;
         }
         craft(player, type);
-        player.openInventory(event.getInventory());
         event.getInventory().setItem(11, createZongziItem(player, "normal", "&a普通粽子", Material.BREAD));
         event.getInventory().setItem(15, createZongziItem(player, "luxury", "&6豪华粽子", Material.CAKE));
     }
