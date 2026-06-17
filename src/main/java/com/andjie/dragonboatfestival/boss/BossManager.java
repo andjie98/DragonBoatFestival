@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 public class BossManager {
 
@@ -49,7 +50,15 @@ public class BossManager {
     }
 
     public boolean isBoss(Entity entity) {
-        return entity.hasMetadata(BOSS_METADATA_KEY);
+        if (!entity.hasMetadata(BOSS_METADATA_KEY)) {
+            return false;
+        }
+        for (MetadataValue value : entity.getMetadata(BOSS_METADATA_KEY)) {
+            if (value.getOwningPlugin() == plugin && value.asBoolean()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void reward(Player killer) {

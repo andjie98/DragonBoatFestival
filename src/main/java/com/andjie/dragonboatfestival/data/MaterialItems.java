@@ -23,7 +23,12 @@ public final class MaterialItems {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Color.text("&a端午材料：&e" + type.getDisplayName()));
         List<String> lore = new ArrayList<String>();
-        lore.add(Color.text("&7用于制作端午粽子"));
+        lore.add(Color.text("&7端午活动专属材料"));
+        lore.add(Color.text("&e▸ 可用于合成普通/豪华粽子"));
+        lore.add(Color.text("&e▸ 制作出的粽子可以食用恢复饥饿值"));
+        lore.add(Color.text("&e▸ 制作粽子可获得节日积分"));
+        lore.add(Color.text("&e▸ 积分可在活动商店兑换物品奖励"));
+        lore.add(Color.text("&c注意：普通原版物品不能当作端午材料"));
         lore.add(MARKER_PREFIX + type.getKey());
         meta.setLore(lore);
         item.setItemMeta(meta);

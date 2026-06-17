@@ -7,7 +7,7 @@ items:
       - '&7内含大量金币'
       - '&7适合日常开销'
     commands:
-      - 'eco give {player} 1000'
+      - 'cmi money give {player} 1000'
   key:
     name: '&b幸运钥匙'
     material: TRIPWIRE_HOOK

@@ -24,10 +24,10 @@ public class ShopMenu implements Listener {
 
     private static final String TITLE = "§8⚘ §6端午活动商店 §8⚘";
     private static final int ROWS = 6;
-    private static final int SHOP_START = 19;
-    private static final int SHOP_END = 25;
-    private static final int SHOP_ROW2_START = 28;
-    private static final int SHOP_ROW2_END = 34;
+    private static final int[] SHOP_SLOTS = new int[]{
+        19, 20, 21, 23, 24, 25,
+        28, 29, 30, 32, 33, 34
+    };
 
     private final DragonBoatFestivalPlugin plugin;
     private List<ShopItem> items;
@@ -54,6 +54,7 @@ public class ShopMenu implements Listener {
                 Color.text(plugin.getShopConfig().getString(path + "name", key)),
                 material,
                 plugin.getShopConfig().getInt(path + "points", 0),
+                plugin.getShopConfig().getDouble(path + "money", 0D),
                 plugin.getShopConfig().getStringList(path + "lore"),
                 plugin.getShopConfig().getStringList(path + "commands")));
         }
@@ -67,6 +68,55 @@ public class ShopMenu implements Listener {
         drawPlayerStatus(inventory, player);
         drawItems(inventory, player);
         player.openInventory(inventory);
+    }
+
+    public List<String> keys() {
+        List<String> keys = new ArrayList<String>();
+        for (ShopItem item : items) {
+            keys.add(item.key);
+        }
+        return keys;
+    }
+
+    public boolean buy(Player player, String key, boolean refreshMenu) {
+        ShopItem item = findItem(key);
+        if (item == null) {
+            player.sendMessage(Color.text("&c商品不存在。"));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0F, 1.0F);
+            return false;
+        }
+        PlayerData data = plugin.getPlayerDataManager().get(player);
+        if (data.getPoints() < item.points) {
+            player.sendMessage(plugin.message("shop-not-enough"));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0F, 1.0F);
+            return false;
+        }
+        data.addPoints(-item.points);
+        if (item.money > 0) {
+            if (plugin.getVaultHook() == null || !plugin.getVaultHook().isEnabled()) {
+                data.addPoints(item.points);
+                player.sendMessage(Color.text("&c兑换失败：服务器未接入 Vault 经济。"));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0F, 1.0F);
+                return false;
+            }
+            if (!plugin.getVaultHook().deposit(player, item.money)) {
+                data.addPoints(item.points);
+                player.sendMessage(Color.text("&c兑换失败：经济奖励发放失败，请联系管理员。"));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0F, 1.0F);
+                return false;
+            }
+        }
+        data.addShopPurchase();
+        plugin.getGoalManager().addProgress("shop-purchase", 1);
+        for (String command : item.commands) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("{player}", player.getName()));
+        }
+        player.sendMessage(plugin.message("shop-bought").replace("{name}", item.name));
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+        if (refreshMenu) {
+            open(player);
+        }
+        return true;
     }
 
     private void drawBorder(Inventory inventory) {
@@ -128,12 +178,8 @@ public class ShopMenu implements Listener {
 
     private void drawItems(Inventory inventory, Player player) {
         PlayerData data = plugin.getPlayerDataManager().get(player);
-        int[] slots = new int[]{
-            19, 20, 21, 23, 24, 25,
-            28, 29, 30, 32, 33, 34
-        };
-        for (int i = 0; i < slots.length && i < items.size(); i++) {
-            inventory.setItem(slots[i], items.get(i).toItemStack(player, data));
+        for (int i = 0; i < SHOP_SLOTS.length && i < items.size(); i++) {
+            inventory.setItem(SHOP_SLOTS[i], items.get(i).toItemStack(player, data));
         }
     }
 
@@ -153,14 +199,9 @@ public class ShopMenu implements Listener {
         Player player = (Player) event.getWhoClicked();
         int slot = event.getRawSlot();
 
-        // 映射点击的 slot 到商品索引
-        int[] slots = new int[]{
-            19, 20, 21, 23, 24, 25,
-            28, 29, 30, 32, 33, 34
-        };
         int index = -1;
-        for (int i = 0; i < slots.length; i++) {
-            if (slots[i] == slot) {
+        for (int i = 0; i < SHOP_SLOTS.length; i++) {
+            if (SHOP_SLOTS[i] == slot) {
                 index = i;
                 break;
             }
@@ -169,24 +210,16 @@ public class ShopMenu implements Listener {
             return;
         }
 
-        ShopItem item = items.get(index);
-        PlayerData data = plugin.getPlayerDataManager().get(player);
-        if (data.getPoints() < item.points) {
-            player.sendMessage(plugin.message("shop-not-enough"));
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0F, 1.0F);
-            return;
-        }
-        data.addPoints(-item.points);
-        data.addShopPurchase();
-        plugin.getGoalManager().addProgress("shop-purchase", 1);
-        for (String command : item.commands) {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.replace("{player}", player.getName()));
-        }
-        player.sendMessage(plugin.message("shop-bought").replace("{name}", item.name));
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+        buy(player, items.get(index).key, true);
+    }
 
-        // 刷新界面
-        open(player);
+    private ShopItem findItem(String key) {
+        for (ShopItem item : items) {
+            if (item.key.equalsIgnoreCase(key)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     private static class ShopItem {
@@ -195,14 +228,16 @@ public class ShopMenu implements Listener {
         private final String name;
         private final Material material;
         private final int points;
+        private final double money;
         private final List<String> rawLore;
         private final List<String> commands;
 
-        private ShopItem(String key, String name, Material material, int points, List<String> rawLore, List<String> commands) {
+        private ShopItem(String key, String name, Material material, int points, double money, List<String> rawLore, List<String> commands) {
             this.key = key;
             this.name = name;
             this.material = material;
             this.points = points;
+            this.money = money;
             this.rawLore = rawLore;
             this.commands = commands;
         }

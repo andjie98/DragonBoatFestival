@@ -8,6 +8,7 @@ import com.andjie.dragonboatfestival.gui.MainMenu;
 import com.andjie.dragonboatfestival.gui.MakeMenu;
 import com.andjie.dragonboatfestival.gui.ShopMenu;
 import com.andjie.dragonboatfestival.hook.PlaceholderAPIHook;
+import com.andjie.dragonboatfestival.hook.TrMenuHook;
 import com.andjie.dragonboatfestival.hook.VaultHook;
 import com.andjie.dragonboatfestival.listener.ActivityListener;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.time.ZoneId;
 
 public class DragonBoatFestivalPlugin extends JavaPlugin {
 
@@ -27,6 +29,7 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
     private BossManager bossManager;
     private DuanwuCommand duanwuCommand;
     private PlaceholderAPIHook placeholderAPIHook;
+    private TrMenuHook trMenuHook;
     private VaultHook vaultHook;
     private BukkitTask autoSaveTask;
     private FileConfiguration messages;
@@ -57,16 +60,20 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(mainMenu, this);
 
         placeholderAPIHook = new PlaceholderAPIHook(this);
+        trMenuHook = new TrMenuHook(this);
         vaultHook = new VaultHook(this);
         if (placeholderAPIHook.isEnabled()) {
             getLogger().info("已接入 PlaceholderAPI");
+        }
+        if (trMenuHook.isEnabled()) {
+            getLogger().info("已启用 TrMenu 菜单界面");
         }
         if (vaultHook.isEnabled()) {
             getLogger().info("已接入 Vault 经济");
         }
 
         long period = Math.max(60L, getConfig().getLong("auto-save-seconds", 300L)) * 20L;
-        autoSaveTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+        autoSaveTask = getServer().getScheduler().runTaskTimer(this, new Runnable() {
             @Override
             public void run() {
                 playerDataManager.saveAll();
@@ -96,6 +103,9 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
     public void reloadPlugin() {
         reloadConfig();
         reloadLocalConfigs();
+        if (trMenuHook != null) {
+            trMenuHook.reload();
+        }
         shopMenu.reload();
         goalManager.reload();
     }
@@ -136,6 +146,28 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         return vaultHook;
     }
 
+    public TrMenuHook getTrMenuHook() {
+        return trMenuHook;
+    }
+
+    public void openMainMenu(org.bukkit.entity.Player player) {
+        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.MAIN_MENU)) {
+            mainMenu.open(player);
+        }
+    }
+
+    public void openMakeMenu(org.bukkit.entity.Player player) {
+        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.MAKE_MENU)) {
+            makeMenu.open(player);
+        }
+    }
+
+    public void openShopMenu(org.bukkit.entity.Player player) {
+        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.SHOP_MENU)) {
+            shopMenu.open(player);
+        }
+    }
+
     public FileConfiguration getMessages() {
         return messages;
     }
@@ -146,6 +178,16 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
 
     public boolean isFestivalEnabled() {
         return getConfig().getBoolean("festival.enabled", true);
+    }
+
+    public ZoneId getSignZoneId() {
+        String zone = getConfig().getString("sign-time-zone", ZoneId.systemDefault().getId());
+        try {
+            return ZoneId.of(zone);
+        } catch (Exception exception) {
+            getLogger().warning("sign-time-zone 配置无效，已使用服务器默认时区: " + zone);
+            return ZoneId.systemDefault();
+        }
     }
 
     public String message(String path) {

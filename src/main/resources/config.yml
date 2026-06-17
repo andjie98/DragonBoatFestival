@@ -3,6 +3,11 @@ festival:
 
 auto-save-seconds: 300
 
+sign-time-zone: 'Asia/Shanghai'
+
+trmenu:
+  overwrite-menus: false
+
 guide:
   join-message: true
   join-delay-seconds: 3
@@ -25,6 +30,7 @@ drop:
   meat: 3
 
 make:
+  cooldown-seconds: 1
   normal:
     rice: 5
     leaf: 2
@@ -38,7 +44,7 @@ sign-rewards:
   day1:
     message: '&a签到成功，获得金币奖励。'
     commands:
-      - 'eco give {player} 100'
+      - 'cmi money give {player} 100'
   day2:
     points: 5
     message: '&a签到成功，获得 5 节日积分。'
@@ -55,6 +61,7 @@ sign-rewards:
       - 'title {player} title {"text":"端午安康","color":"green"}'
 
 fish-rewards:
+  chance: 100
   rice: 40
   leaf: 30
   jujube: 15

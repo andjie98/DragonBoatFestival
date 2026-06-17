@@ -26,9 +26,20 @@ public class MakeMenu implements Listener {
     private static final String TITLE = "§a端午粽子制作";
 
     private final DragonBoatFestivalPlugin plugin;
+    private final java.util.Map<java.util.UUID, Long> cooldowns = new java.util.HashMap<>();
 
     public MakeMenu(DragonBoatFestivalPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    private boolean checkCooldown(Player player) {
+        long now = System.currentTimeMillis();
+        long last = cooldowns.getOrDefault(player.getUniqueId(), 0L);
+        int cd = plugin.getConfig().getInt("make.cooldown-seconds", 1);
+        if (cd <= 0) return true;
+        if (now - last < cd * 1000L) return false;
+        cooldowns.put(player.getUniqueId(), now);
+        return true;
     }
 
     public void open(Player player) {
@@ -109,6 +120,11 @@ public class MakeMenu implements Listener {
         Player player = (Player) event.getWhoClicked();
         if (!player.hasPermission("duanwu.make")) {
             player.sendMessage(plugin.message("no-permission"));
+            return;
+        }
+        if (!checkCooldown(player)) {
+            int cd = plugin.getConfig().getInt("make.cooldown-seconds", 1);
+            player.sendMessage(plugin.message("cooldown").replace("{seconds}", String.valueOf(cd)));
             return;
         }
         craft(player, type);

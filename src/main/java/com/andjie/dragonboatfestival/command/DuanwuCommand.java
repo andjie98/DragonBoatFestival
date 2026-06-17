@@ -21,9 +21,25 @@ import java.util.Set;
 public class DuanwuCommand implements CommandExecutor, TabCompleter {
 
     private final DragonBoatFestivalPlugin plugin;
+    private final java.util.Map<java.util.UUID, Long> makeCooldowns = new java.util.HashMap<>();
 
     public DuanwuCommand(DragonBoatFestivalPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    private boolean checkMakeCooldown(Player player) {
+        long now = System.currentTimeMillis();
+        long last = makeCooldowns.getOrDefault(player.getUniqueId(), 0L);
+        int cd = plugin.getConfig().getInt("make.cooldown-seconds", 1);
+        if (cd <= 0) return true;
+        long elapsed = now - last;
+        if (elapsed < cd * 1000L) {
+            player.sendMessage(plugin.message("cooldown")
+                .replace("{seconds}", String.valueOf(cd - elapsed / 1000)));
+            return false;
+        }
+        makeCooldowns.put(player.getUniqueId(), now);
+        return true;
     }
 
     @Override
@@ -66,6 +82,9 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         if ("shop".equalsIgnoreCase(args[0])) {
             return shop(sender);
         }
+        if ("buy".equalsIgnoreCase(args[0])) {
+            return buy(sender, args);
+        }
         if ("sign".equalsIgnoreCase(args[0])) {
             return sign(sender);
         }
@@ -91,7 +110,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return filter(Arrays.asList("help", "guide", "status", "points", "materials", "make", "shop", "sign", "fish", "goals", "boss", "reload", "open", "give", "addpoint", "setpoint"), args[0]);
+            return filter(Arrays.asList("help", "guide", "status", "points", "materials", "make", "shop", "buy", "sign", "fish", "goals", "boss", "reload", "open", "give", "addpoint", "setpoint"), args[0]);
         }
         if (args.length == 2 && ("addpoint".equalsIgnoreCase(args[0]) || "setpoint".equalsIgnoreCase(args[0]) || "open".equalsIgnoreCase(args[0]) || "give".equalsIgnoreCase(args[0]))) {
             List<String> players = new ArrayList<String>();
@@ -105,6 +124,9 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2 && "boss".equalsIgnoreCase(args[0])) {
             return filter(Arrays.asList("spawn"), args[1]);
+        }
+        if (args.length == 2 && "buy".equalsIgnoreCase(args[0])) {
+            return filter(plugin.getShopMenu().keys(), args[1]);
         }
         if (args.length == 3 && "give".equalsIgnoreCase(args[0])) {
             return filter(Arrays.asList("rice", "leaf", "jujube", "meat"), args[2]);
@@ -121,7 +143,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(plugin.message("festival-disabled"));
             return true;
         }
-        plugin.getMainMenu().open(player);
+        plugin.openMainMenu(player);
         return true;
     }
 
@@ -214,12 +236,15 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 2) {
-            plugin.getMakeMenu().open(player);
+            plugin.openMakeMenu(player);
             return true;
         }
         String type = args[1].toLowerCase();
         if (!"normal".equals(type) && !"luxury".equals(type)) {
             sender.sendMessage(Color.text("&c用法：/duanwu make [normal|luxury]"));
+            return true;
+        }
+        if (!checkMakeCooldown(player)) {
             return true;
         }
         plugin.getMakeMenu().craft(player, type);
@@ -231,8 +256,21 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         if (player == null || !hasPermission(player, "duanwu.shop")) {
             return true;
         }
-        plugin.getShopMenu().open(player);
+        plugin.openShopMenu(player);
         player.sendMessage(plugin.message("shop-open"));
+        return true;
+    }
+
+    private boolean buy(CommandSender sender, String[] args) {
+        Player player = requirePlayer(sender);
+        if (player == null || !hasPermission(player, "duanwu.shop")) {
+            return true;
+        }
+        if (args.length < 2) {
+            player.sendMessage(Color.text("&c用法：/duanwu buy 商品ID"));
+            return true;
+        }
+        plugin.getShopMenu().buy(player, args[1], false);
         return true;
     }
 
@@ -242,13 +280,13 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         PlayerData data = plugin.getPlayerDataManager().get(player);
-        if (data.hasSignedToday()) {
+        if (data.hasSignedToday(plugin.getSignZoneId())) {
             player.sendMessage(plugin.message("sign-already"));
             return true;
         }
         int day = (data.getSignDays() % 5) + 1;
         String path = "sign-rewards.day" + day;
-        data.setLastSign(LocalDate.now().toString());
+        data.setLastSign(LocalDate.now(plugin.getSignZoneId()).toString());
         data.addSignDay();
         plugin.getGoalManager().addProgress("sign", 1);
         data.addPoints(plugin.getConfig().getInt(path + ".points", 0));
@@ -285,7 +323,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(Color.text("&c玩家不在线。"));
             return true;
         }
-        plugin.getShopMenu().open(target);
+        plugin.openMainMenu(target);
         return true;
     }
 
@@ -387,7 +425,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             + "&7，签到 &e" + data.getSignDays()
             + "&7，兑换 &e" + data.getShopPurchases()
             + "&7，摸鱼奖励 &e" + data.getFishRewards()));
-        player.sendMessage(Color.text(data.hasSignedToday() ? "&a今日已签到" : "&e今日还没签到，输入 /duanwu sign 领取奖励。"));
+        player.sendMessage(Color.text(data.hasSignedToday(plugin.getSignZoneId()) ? "&a今日已签到" : "&e今日还没签到，输入 /duanwu sign 领取奖励。"));
         player.sendMessage(Color.text(nextStep(player, data)));
     }
 
@@ -410,7 +448,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
     }
 
     private String nextStep(Player player, PlayerData data) {
-        if (!data.hasSignedToday()) {
+        if (!data.hasSignedToday(plugin.getSignZoneId())) {
             return "&e推荐下一步：输入 /duanwu sign 先领取今日签到奖励。";
         }
         int rice = MaterialItems.count(player, MaterialType.RICE);

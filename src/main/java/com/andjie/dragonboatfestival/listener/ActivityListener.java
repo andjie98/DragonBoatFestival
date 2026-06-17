@@ -7,6 +7,7 @@ import com.andjie.dragonboatfestival.data.MaterialType;
 import com.andjie.dragonboatfestival.data.PlayerData;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.CropState;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.material.Crops;
 
 import java.util.Random;
 
@@ -58,7 +60,7 @@ public class ActivityListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         try {
-            if (!plugin.isFestivalEnabled()) {
+            if (!plugin.isFestivalEnabled() || event.isCancelled()) {
                 return;
             }
             Block block = event.getBlock();
@@ -67,7 +69,7 @@ public class ActivityListener implements Listener {
                 reward = MaterialType.RICE;
             } else if (block.getType().name().contains("LEAVES")) {
                 reward = MaterialType.LEAF;
-            } else if (isCrop(block.getType())) {
+            } else if (isMatureCrop(block)) {
                 reward = MaterialType.JUJUBE;
             }
             if (reward != null) {
@@ -101,10 +103,14 @@ public class ActivityListener implements Listener {
     @EventHandler
     public void onFish(PlayerFishEvent event) {
         try {
-            if (!plugin.isFestivalEnabled() || event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
+            if (!plugin.isFestivalEnabled() || event.isCancelled() || event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
                 return;
             }
             Player player = event.getPlayer();
+            int chance = Math.max(0, Math.min(100, plugin.getConfig().getInt("fish-rewards.chance", 100)));
+            if (chance <= 0 || random.nextInt(100) >= chance) {
+                return;
+            }
             int rice = plugin.getConfig().getInt("fish-rewards.rice", 0);
             int leaf = plugin.getConfig().getInt("fish-rewards.leaf", 0);
             int jujube = plugin.getConfig().getInt("fish-rewards.jujube", 0);
@@ -189,5 +195,20 @@ public class ActivityListener implements Listener {
             || material == Material.BEETROOT_BLOCK
             || material == Material.MELON_BLOCK
             || material == Material.PUMPKIN;
+    }
+
+    private boolean isMatureCrop(Block block) {
+        Material material = block.getType();
+        if (material == Material.MELON_BLOCK || material == Material.PUMPKIN) {
+            return true;
+        }
+        if (!isCrop(material)) {
+            return false;
+        }
+        if (block.getState().getData() instanceof Crops) {
+            Crops crops = (Crops) block.getState().getData();
+            return crops.getState() == CropState.RIPE;
+        }
+        return block.getData() >= 7;
     }
 }

@@ -1,0 +1,109 @@
+Title: '&6端午活动商店'
+
+Layout:
+  - '#########'
+  - '#   P   #'
+  - '# C K F #'
+  - '# H T   #'
+  - '####B####'
+
+Options:
+  Min-Click-Delay: 200
+  Depend-Expansions: [ 'player', 'duanwu' ]
+
+Events:
+  Open:
+    - 'sound: BLOCK_CHEST_OPEN-1-1'
+
+Icons:
+  '#':
+    display:
+      material: STAINED_GLASS_PANE:1
+      name: '&r'
+
+  P:
+    display:
+      material: EMERALD
+      name: '&6我的积分'
+      lore:
+        - '&7当前拥有：&e%duanwu_points% &7节日积分'
+        - '&7点击商品即可兑换。'
+
+  C:
+    display:
+      material: GOLD_INGOT
+      name: '&e金币礼包'
+      lore:
+        - '&7内含大量金币。'
+        - '&6价格：&e10 &7积分'
+        - ''
+        - '&e点击兑换'
+    actions:
+      all:
+        - close
+        - 'command: duanwu buy coin'
+
+  K:
+    display:
+      material: TRIPWIRE_HOOK
+      name: '&b幸运钥匙'
+      lore:
+        - '&7一把神秘的钥匙。'
+        - '&6价格：&e20 &7积分'
+        - ''
+        - '&e点击兑换'
+    actions:
+      all:
+        - close
+        - 'command: duanwu buy key'
+
+  F:
+    display:
+      material: FIREWORK
+      name: '&d节日烟花'
+      lore:
+        - '&7绚丽的节日烟花。'
+        - '&6价格：&e15 &7积分'
+        - ''
+        - '&e点击兑换'
+    actions:
+      all:
+        - close
+        - 'command: duanwu buy firework'
+
+  H:
+    display:
+      material: SKULL_ITEM
+      name: '&6端午纪念头颅'
+      lore:
+        - '&7限定的端午纪念品。'
+        - '&6价格：&e50 &7积分'
+        - ''
+        - '&e点击兑换'
+    actions:
+      all:
+        - close
+        - 'command: duanwu buy head'
+
+  T:
+    display:
+      material: NAME_TAG
+      name: '&a限定称号'
+      lore:
+        - '&7端午勇士专属称号。'
+        - '&6价格：&e100 &7积分'
+        - ''
+        - '&e点击兑换'
+    actions:
+      all:
+        - close
+        - 'command: duanwu buy title'
+
+  B:
+    display:
+      material: ARROW
+      name: '&f返回活动中心'
+    actions:
+      all:
+        - 'open: duanwu-main'
+        - 'sound: BLOCK_NOTE_PLING-1-1'

@@ -1,6 +1,7 @@
 package com.andjie.dragonboatfestival.data;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 public class PlayerData {
@@ -14,6 +15,7 @@ public class PlayerData {
     private int shopPurchases;
     private int signDays;
     private String lastSign;
+    private boolean dirty;
 
     public PlayerData(UUID uuid, String name) {
         this.uuid = uuid;
@@ -33,7 +35,11 @@ public class PlayerData {
     }
 
     public void setPoints(int points) {
-        this.points = Math.max(0, points);
+        int newPoints = Math.max(0, points);
+        if (this.points != newPoints) {
+            this.points = newPoints;
+            dirty = true;
+        }
     }
 
     public void addPoints(int amount) {
@@ -45,7 +51,11 @@ public class PlayerData {
     }
 
     public void setNormalMade(int normalMade) {
-        this.normalMade = Math.max(0, normalMade);
+        int newNormalMade = Math.max(0, normalMade);
+        if (this.normalMade != newNormalMade) {
+            this.normalMade = newNormalMade;
+            dirty = true;
+        }
     }
 
     public int getLuxuryMade() {
@@ -53,7 +63,11 @@ public class PlayerData {
     }
 
     public void setLuxuryMade(int luxuryMade) {
-        this.luxuryMade = Math.max(0, luxuryMade);
+        int newLuxuryMade = Math.max(0, luxuryMade);
+        if (this.luxuryMade != newLuxuryMade) {
+            this.luxuryMade = newLuxuryMade;
+            dirty = true;
+        }
     }
 
     public int getFishRewards() {
@@ -61,7 +75,11 @@ public class PlayerData {
     }
 
     public void setFishRewards(int fishRewards) {
-        this.fishRewards = Math.max(0, fishRewards);
+        int newFishRewards = Math.max(0, fishRewards);
+        if (this.fishRewards != newFishRewards) {
+            this.fishRewards = newFishRewards;
+            dirty = true;
+        }
     }
 
     public int getShopPurchases() {
@@ -69,7 +87,11 @@ public class PlayerData {
     }
 
     public void setShopPurchases(int shopPurchases) {
-        this.shopPurchases = Math.max(0, shopPurchases);
+        int newShopPurchases = Math.max(0, shopPurchases);
+        if (this.shopPurchases != newShopPurchases) {
+            this.shopPurchases = newShopPurchases;
+            dirty = true;
+        }
     }
 
     public int getSignDays() {
@@ -77,27 +99,31 @@ public class PlayerData {
     }
 
     public void setSignDays(int signDays) {
-        this.signDays = Math.max(0, signDays);
+        int newSignDays = Math.max(0, signDays);
+        if (this.signDays != newSignDays) {
+            this.signDays = newSignDays;
+            dirty = true;
+        }
     }
 
     public void addNormalMade() {
-        normalMade++;
+        setNormalMade(normalMade + 1);
     }
 
     public void addLuxuryMade() {
-        luxuryMade++;
+        setLuxuryMade(luxuryMade + 1);
     }
 
     public void addFishRewards() {
-        fishRewards++;
+        setFishRewards(fishRewards + 1);
     }
 
     public void addShopPurchase() {
-        shopPurchases++;
+        setShopPurchases(shopPurchases + 1);
     }
 
     public void addSignDay() {
-        signDays++;
+        setSignDays(signDays + 1);
     }
 
     public String getLastSign() {
@@ -105,10 +131,25 @@ public class PlayerData {
     }
 
     public void setLastSign(String lastSign) {
-        this.lastSign = lastSign;
+        if (this.lastSign == null ? lastSign != null : !this.lastSign.equals(lastSign)) {
+            this.lastSign = lastSign;
+            dirty = true;
+        }
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void clearDirty() {
+        dirty = false;
     }
 
     public boolean hasSignedToday() {
         return LocalDate.now().toString().equals(lastSign);
+    }
+
+    public boolean hasSignedToday(ZoneId zoneId) {
+        return LocalDate.now(zoneId).toString().equals(lastSign);
     }
 }

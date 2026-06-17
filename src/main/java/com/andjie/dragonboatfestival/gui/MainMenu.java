@@ -61,9 +61,9 @@ public class MainMenu implements Listener {
             player.closeInventory();
             plugin.getDuanwuCommand().sendStatus(player);
         } else if (slot == 10) {
-            plugin.getMakeMenu().open(player);
+            plugin.openMakeMenu(player);
         } else if (slot == 11) {
-            plugin.getShopMenu().open(player);
+            plugin.openShopMenu(player);
             player.sendMessage(plugin.message("shop-open"));
         } else if (slot == 12) {
             player.closeInventory();
@@ -85,7 +85,7 @@ public class MainMenu implements Listener {
         lore.add("&7粽叶：&e" + MaterialItems.count(player, MaterialType.LEAF));
         lore.add("&7红枣：&e" + MaterialItems.count(player, MaterialType.JUJUBE));
         lore.add("&7鲜肉：&e" + MaterialItems.count(player, MaterialType.MEAT));
-        lore.add(data.hasSignedToday() ? "&a今日已签到" : "&c今日未签到");
+        lore.add(data.hasSignedToday(plugin.getSignZoneId()) ? "&a今日已签到" : "&c今日未签到");
         lore.add("&7点击查看详细状态");
         return lore;
     }

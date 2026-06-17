@@ -1,0 +1,64 @@
+Title: '&a端午粽子制作'
+
+Layout:
+  - '#########'
+  - '#   N   #'
+  - '#   L   #'
+  - '####B####'
+
+Options:
+  Min-Click-Delay: 200
+  Depend-Expansions: [ 'player', 'duanwu' ]
+
+Events:
+  Open:
+    - 'sound: BLOCK_CHEST_OPEN-1-1'
+
+Icons:
+  '#':
+    display:
+      material: STAINED_GLASS_PANE:13
+      name: '&r'
+
+  N:
+    display:
+      material: BREAD
+      name: '&a普通粽子'
+      lore:
+        - '&7消耗材料：'
+        - '&a糯米：&e%duanwu_rice%&7/5'
+        - '&a粽叶：&e%duanwu_leaf%&7/2'
+        - ''
+        - '&7制作后获得 &e1 &7节日积分。'
+        - '&e点击制作普通粽子'
+    actions:
+      all:
+        - close
+        - 'command: duanwu make normal'
+
+  L:
+    display:
+      material: CAKE
+      name: '&6豪华粽子'
+      lore:
+        - '&7消耗材料：'
+        - '&6糯米：&e%duanwu_rice%&7/10'
+        - '&6粽叶：&e%duanwu_leaf%&7/5'
+        - '&6红枣：&e%duanwu_jujube%&7/3'
+        - '&6鲜肉：&e%duanwu_meat%&7/3'
+        - ''
+        - '&7制作后获得 &e5 &7节日积分。'
+        - '&e点击制作豪华粽子'
+    actions:
+      all:
+        - close
+        - 'command: duanwu make luxury'
+
+  B:
+    display:
+      material: ARROW
+      name: '&f返回活动中心'
+    actions:
+      all:
+        - 'open: duanwu-main'
+        - 'sound: BLOCK_NOTE_PLING-1-1'

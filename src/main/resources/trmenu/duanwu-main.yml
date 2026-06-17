@@ -1,0 +1,121 @@
+Title: '&a端午活动中心'
+
+Layout:
+  - '#########'
+  - '#SMKGLF#'
+  - '####B####'
+
+Options:
+  Min-Click-Delay: 200
+  Depend-Expansions: [ 'player', 'duanwu' ]
+
+Events:
+  Open:
+    - 'sound: BLOCK_CHEST_OPEN-1-1'
+  Close:
+    - 'sound: BLOCK_CHEST_CLOSE-1-1'
+
+Icons:
+  '#':
+    display:
+      material: STAINED_GLASS_PANE:5
+      name: '&r'
+
+  S:
+    display:
+      material: BOOK
+      name: '&a我的活动状态'
+      lore:
+        - '&7积分：&e%duanwu_points%'
+        - '&7糯米：&e%duanwu_rice%'
+        - '&7粽叶：&e%duanwu_leaf%'
+        - '&7红枣：&e%duanwu_jujube%'
+        - '&7鲜肉：&e%duanwu_meat%'
+        - '&7签到天数：&e%duanwu_sign_days%'
+        - ''
+        - '&e点击查看详细状态'
+    actions:
+      all:
+        - close
+        - 'command: duanwu status'
+
+  M:
+    display:
+      material: WORKBENCH
+      name: '&e制作粽子'
+      lore:
+        - '&7普通粽子和豪华粽子都在这里制作。'
+        - '&7当前材料总数：&e%duanwu_materials_total%'
+        - ''
+        - '&e点击打开制作菜单'
+    actions:
+      all:
+        - 'open: duanwu-make'
+        - 'sound: BLOCK_NOTE_PLING-1-1'
+
+  K:
+    display:
+      material: EMERALD
+      name: '&6活动商店'
+      lore:
+        - '&7使用节日积分兑换奖励。'
+        - '&7当前积分：&e%duanwu_points%'
+        - ''
+        - '&e点击打开活动商店'
+    actions:
+      all:
+        - 'open: duanwu-shop'
+        - 'sound: BLOCK_NOTE_PLING-1-1'
+
+  G:
+    display:
+      material: SIGN
+      name: '&b每日签到'
+      lore:
+        - '&7每天领取一次活动奖励。'
+        - '&7今日状态：&e%duanwu_signed_today%'
+        - ''
+        - '&e点击签到'
+    actions:
+      all:
+        - close
+        - 'command: duanwu sign'
+
+  L:
+    display:
+      material: FISHING_ROD
+      name: '&3幸运摸鱼'
+      lore:
+        - '&7钓鱼可获得材料和礼包。'
+        - '&7摸鱼奖励次数：&e%duanwu_fish_rewards%'
+        - ''
+        - '&e点击查看说明'
+    actions:
+      all:
+        - close
+        - 'command: duanwu fish'
+
+  F:
+    display:
+      material: PAPER
+      name: '&f新手指南'
+      lore:
+        - '&7不知道怎么玩？'
+        - '&7点击查看完整流程。'
+    actions:
+      all:
+        - close
+        - 'command: duanwu guide'
+
+  B:
+    display:
+      material: NETHER_STAR
+      name: '&d全服目标'
+      lore:
+        - '&7查看全服任务进度。'
+        - ''
+        - '&e点击查看'
+    actions:
+      all:
+        - close
+        - 'command: duanwu goals'

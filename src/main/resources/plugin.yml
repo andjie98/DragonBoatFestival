@@ -3,7 +3,7 @@ version: "1.0.0"
 main: com.andjie.dragonboatfestival.DragonBoatFestivalPlugin
 author: andjie
 description: 端午节活动插件
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, TrMenu, ajLeaderboards]
 commands:
   duanwu:
     description: 端午节活动主命令

@@ -53,6 +53,7 @@ public class VaultHook {
         try {
             return (double) balanceMethod.invoke(economy, player);
         } catch (Exception exception) {
+            plugin.getLogger().warning("Vault 查询余额失败(" + player.getName() + "): " + exception.getMessage());
             return 0;
         }
     }
@@ -65,6 +66,7 @@ public class VaultHook {
             Object result = withdrawMethod.invoke(economy, player, amount);
             return (boolean) transactionSuccessMethod.invoke(result);
         } catch (Exception exception) {
+            plugin.getLogger().warning("Vault 扣款失败(" + player.getName() + ", " + amount + "): " + exception.getMessage());
             return false;
         }
     }
@@ -77,6 +79,7 @@ public class VaultHook {
             Object result = depositMethod.invoke(economy, player, amount);
             return (boolean) transactionSuccessMethod.invoke(result);
         } catch (Exception exception) {
+            plugin.getLogger().warning("Vault 存款失败(" + player.getName() + ", " + amount + "): " + exception.getMessage());
             return false;
         }
     }
