@@ -21,3 +21,12 @@ Thumbs.db
 
 # Runtime generated
 .gen/
+
+# Tool configs
+.reasonix/
+.qwen/
+.codegraph/
+reasonix.toml
+
+# TrMenu auto-generated
+src/main/resources/trmenu/
