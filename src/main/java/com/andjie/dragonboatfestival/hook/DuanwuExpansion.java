@@ -69,7 +69,15 @@ public class DuanwuExpansion extends PlaceholderExpansion {
         }
 
         // 统计类：在线离线均可读取。
-        PlayerData data = plugin.getPlayerDataManager().getOrLoad(player);
+        PlayerData data;
+        if (player instanceof Player) {
+            data = plugin.getPlayerDataManager().getIfLoaded((Player) player);
+            if (data == null) {
+                data = plugin.getPlayerDataManager().getOrLoad(player);
+            }
+        } else {
+            data = plugin.getPlayerDataManager().getOrLoad(player);
+        }
         return resolveStats(data, param);
     }
 

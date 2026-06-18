@@ -42,7 +42,9 @@ public class BossManager {
         String name = Color.text(plugin.getConfig().getString("boss.name", "&2端午粽王"));
         boss.setCustomName(name);
         boss.setCustomNameVisible(true);
-        boss.setMaxHealth(plugin.getConfig().getDouble("boss.health", 200.0D));
+        double health = plugin.getConfig().getDouble("boss.health", 200.0D);
+        health = Math.max(1.0D, health);
+        boss.setMaxHealth(health);
         boss.setHealth(boss.getMaxHealth());
         boss.setMetadata(BOSS_METADATA_KEY, new FixedMetadataValue(plugin, true));
         plugin.getServer().broadcastMessage(plugin.message("boss-spawned").replace("{name}", name));
@@ -62,7 +64,7 @@ public class BossManager {
     }
 
     public void reward(Player killer) {
-        int points = plugin.getConfig().getInt("boss.reward-points", 20);
+        int points = Math.max(0, plugin.getConfig().getInt("boss.reward-points", 20));
         if (points > 0) {
             plugin.getPlayerDataManager().get(killer).addPoints(points);
         }

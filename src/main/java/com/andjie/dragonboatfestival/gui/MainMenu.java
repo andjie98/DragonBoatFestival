@@ -44,11 +44,15 @@ public class MainMenu implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof MenuHolder)) {
+        InventoryHolder holder = event.getView().getTopInventory().getHolder();
+        if (!(holder instanceof MenuHolder)) {
             return;
         }
-        MenuHolder holder = (MenuHolder) event.getInventory().getHolder();
-        if (!"main".equals(holder.getId())) {
+        MenuHolder menuHolder = (MenuHolder) holder;
+        if (!"main".equals(menuHolder.getId())) {
+            return;
+        }
+        if (event.getRawSlot() >= event.getView().getTopInventory().getSize()) {
             return;
         }
         event.setCancelled(true);

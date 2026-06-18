@@ -44,20 +44,34 @@ public class ShopMenu implements Listener {
             return;
         }
         for (String key : section.getKeys(false)) {
+            if (!isValidKey(key)) {
+                plugin.getLogger().warning("已跳过非法商店商品ID: " + key);
+                continue;
+            }
             String path = "items." + key + ".";
             Material material = Material.matchMaterial(plugin.getShopConfig().getString(path + "material", "STONE"));
             if (material == null) {
                 material = Material.STONE;
             }
+            int points = plugin.getShopConfig().getInt(path + "points", 0);
+            if (points < 1) {
+                plugin.getLogger().warning("已跳过价格无效的商店商品: " + key + " (points=" + points + ")");
+                continue;
+            }
+            double money = Math.max(0D, plugin.getShopConfig().getDouble(path + "money", 0D));
             items.add(new ShopItem(
                 key,
                 Color.text(plugin.getShopConfig().getString(path + "name", key)),
                 material,
-                plugin.getShopConfig().getInt(path + "points", 0),
-                plugin.getShopConfig().getDouble(path + "money", 0D),
+                points,
+                money,
                 plugin.getShopConfig().getStringList(path + "lore"),
                 plugin.getShopConfig().getStringList(path + "commands")));
         }
+    }
+
+    private boolean isValidKey(String key) {
+        return key != null && key.matches("[A-Za-z0-9_-]+");
     }
 
     public void open(Player player) {
@@ -185,11 +199,15 @@ public class ShopMenu implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof MenuHolder)) {
+        Inventory top = event.getView().getTopInventory();
+        if (!(top.getHolder() instanceof MenuHolder)) {
             return;
         }
-        MenuHolder holder = (MenuHolder) event.getInventory().getHolder();
+        MenuHolder holder = (MenuHolder) top.getHolder();
         if (!"shop".equals(holder.getId())) {
+            return;
+        }
+        if (event.getRawSlot() >= top.getSize()) {
             return;
         }
         event.setCancelled(true);

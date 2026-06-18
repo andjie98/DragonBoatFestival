@@ -98,11 +98,15 @@ public class MakeMenu implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof MenuHolder)) {
+        Inventory top = event.getView().getTopInventory();
+        if (!(top.getHolder() instanceof MenuHolder)) {
             return;
         }
-        MenuHolder holder = (MenuHolder) event.getInventory().getHolder();
+        MenuHolder holder = (MenuHolder) top.getHolder();
         if (!"make".equals(holder.getId())) {
+            return;
+        }
+        if (event.getRawSlot() >= top.getSize()) {
             return;
         }
         event.setCancelled(true);
@@ -149,7 +153,7 @@ public class MakeMenu implements Listener {
         }
         MaterialItems.take(player, cost);
         PlayerData data = plugin.getPlayerDataManager().get(player);
-        int points = plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi"));
+        int points = Math.max(0, plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi")));
         data.addPoints(points);
         if ("luxury".equals(type)) {
             data.addLuxuryMade();
@@ -269,10 +273,10 @@ public class MakeMenu implements Listener {
     private Map<MaterialType, Integer> makeCost(String type) {
         Map<MaterialType, Integer> cost = new EnumMap<MaterialType, Integer>(MaterialType.class);
         String path = "make." + type + ".";
-        cost.put(MaterialType.RICE, plugin.getConfig().getInt(path + "rice", 0));
-        cost.put(MaterialType.LEAF, plugin.getConfig().getInt(path + "leaf", 0));
-        cost.put(MaterialType.JUJUBE, plugin.getConfig().getInt(path + "jujube", 0));
-        cost.put(MaterialType.MEAT, plugin.getConfig().getInt(path + "meat", 0));
+        cost.put(MaterialType.RICE, Math.max(0, plugin.getConfig().getInt(path + "rice", 0)));
+        cost.put(MaterialType.LEAF, Math.max(0, plugin.getConfig().getInt(path + "leaf", 0)));
+        cost.put(MaterialType.JUJUBE, Math.max(0, plugin.getConfig().getInt(path + "jujube", 0)));
+        cost.put(MaterialType.MEAT, Math.max(0, plugin.getConfig().getInt(path + "meat", 0)));
         return cost;
     }
 }
