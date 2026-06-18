@@ -550,12 +550,12 @@ fish-rewards:
 ```yaml
 fish-commands:
   lucky:
-    - 'give {player} chest 1'
+    - 'kit 端午礼包'
   legend:
     - 'give {player} diamond 3'
 ```
 
-钓到幸运/传说礼包时，由控制台执行的命令列表。
+钓到幸运/传说礼包时，由控制台执行的命令列表。默认幸运礼包会直接发放金锭和绿宝石，而不是发放空箱子。
 
 ---
 

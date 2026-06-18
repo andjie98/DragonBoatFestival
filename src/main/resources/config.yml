@@ -71,7 +71,7 @@ fish-rewards:
 
 fish-commands:
   lucky:
-    - 'give {player} chest 1'
+    - 'kit 端午礼包'
   legend:
     - 'give {player} diamond 3'
 
