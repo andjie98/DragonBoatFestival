@@ -1,46 +1,15 @@
 items:
-  coin:
-    name: '&e金币礼包'
-    material: GOLD_INGOT
-    points: 10
+  gift:
+    name: '&e端午礼包'
+    material: CHEST
+    points: 4000
     lore:
-      - '&7内含大量金币'
-      - '&7适合日常开销'
+      - '&7内含丰富的端午礼品'
+      - '&7超值回馈，不容错过'
     commands:
-      - 'cmi money give {player} 1000'
-  key:
-    name: '&b幸运钥匙'
-    material: TRIPWIRE_HOOK
-    points: 20
-    lore:
-      - '&7一把神秘的钥匙'
-      - '&7或许能开启宝藏'
-    commands:
-      - 'give {player} tripwire_hook 1'
-  firework:
-    name: '&d节日烟花'
-    material: FIREWORK
-    points: 15
-    lore:
-      - '&7绚丽的节日烟花'
-      - '&7和朋友一起庆祝吧'
-    commands:
-      - 'give {player} fireworks 3'
-  head:
-    name: '&6端午纪念头颅'
-    material: SKULL_ITEM
-    points: 50
-    lore:
-      - '&7限定的端午纪念品'
-      - '&7极具收藏价值'
-    commands:
-      - 'give {player} skull_item 1'
-  title:
-    name: '&a限定称号'
-    material: NAME_TAG
-    points: 100
-    lore:
-      - '&7端午勇士专属称号'
-      - '&7彰显你的节日热情'
-    commands:
-      - 'title {player} title {"text":"端午勇士","color":"green"}'
+      - 'mm items give {player} DW_SWORD 1'
+      - 'mm items give {player} DW_HELMET 1'
+      - 'mm items give {player} DW_CHESTPLATE 1'
+      - 'mm items give {player} DW_LEGGINGS 1'
+      - 'mm items give {player} DW_BOOTS 1'
+      - 'mm items give {player} DW_AMULET 1'

@@ -107,11 +107,19 @@ public class PlayerData {
     }
 
     public void addNormalMade() {
-        setNormalMade(normalMade + 1);
+        addNormalMade(1);
+    }
+
+    public void addNormalMade(int amount) {
+        setNormalMade(normalMade + amount);
     }
 
     public void addLuxuryMade() {
-        setLuxuryMade(luxuryMade + 1);
+        addLuxuryMade(1);
+    }
+
+    public void addLuxuryMade(int amount) {
+        setLuxuryMade(luxuryMade + amount);
     }
 
     public void addFishRewards() {

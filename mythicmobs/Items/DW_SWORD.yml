@@ -1,0 +1,25 @@
+# 端午龙魂剑 — 端午龙神套装 (1/6)
+# 安装路径: plugins/MythicMobs/Items/DW_SWORD.yml
+DW_SWORD:
+  Id: DIAMOND_SWORD
+  Data: 0
+  Amount: 1
+  Display: '&6⚔ 端午龙魂剑'
+  Lore:
+  - '&7传说中蕴含龙魂之力的神剑'
+  - '&7剑身刻有端午龙纹，剑气纵横'
+  - ''
+  - '&e⚡ 套装部件 &7(1/6)'
+  - '&8▸ 端午龙鳞头盔'
+  - '&8▸ 端午龙鳞胸甲'
+  - '&8▸ 端午龙鳞护腿'
+  - '&8▸ 端午龙鳞战靴'
+  - '&8▸ 端午龙神护符'
+  - ''
+  - '&6✦ 火焰附加'
+  - '&8-------------'
+  - '&c物理伤害: +300'
+  Enchantments:
+  - DAMAGE_ALL: 5
+  - DURABILITY: 3
+  - FIRE_ASPECT: 2

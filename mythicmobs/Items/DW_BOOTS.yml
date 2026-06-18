@@ -1,0 +1,26 @@
+# 端午龙鳞战靴 — 端午龙神套装 (5/6)
+# 安装路径: plugins/MythicMobs/Items/DW_BOOTS.yml
+DW_BOOTS:
+  Id: DIAMOND_BOOTS
+  Data: 0
+  Amount: 1
+  Display: '&3⛊ 端午龙鳞战靴'
+  Lore:
+  - '&7踏水而行，如履平地'
+  - '&7龙鳞战靴让你身轻如燕'
+  - ''
+  - '&e⚡ 套装部件 &7(5/6)'
+  - '&8▸ 端午龙魂剑'
+  - '&8▸ 端午龙鳞头盔'
+  - '&8▸ 端午龙鳞胸甲'
+  - '&8▸ 端午龙鳞护腿'
+  - '&8▸ 端午龙神护符'
+  - ''
+  - '&8-------------'
+  - '&a护甲值: +6'
+  - '&a物理防御: +15'
+  - '&6✦ 摔落减免'
+  Enchantments:
+  - PROTECTION_ENVIRONMENTAL: 4
+  - DURABILITY: 3
+  - PROTECTION_FALL: 4

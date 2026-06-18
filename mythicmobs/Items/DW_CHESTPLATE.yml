@@ -1,0 +1,26 @@
+# 端午龙鳞胸甲 — 端午龙神套装 (3/6)
+# 安装路径: plugins/MythicMobs/Items/DW_CHESTPLATE.yml
+DW_CHESTPLATE:
+  Id: DIAMOND_CHESTPLATE
+  Data: 0
+  Amount: 1
+  Display: '&3⛊ 端午龙鳞胸甲'
+  Lore:
+  - '&7龙鳞编织的战甲，万法不侵'
+  - '&7承载着端午龙神的祝福'
+  - ''
+  - '&e⚡ 套装部件 &7(3/6)'
+  - '&8▸ 端午龙魂剑'
+  - '&8▸ 端午龙鳞头盔'
+  - '&8▸ 端午龙鳞护腿'
+  - '&8▸ 端午龙鳞战靴'
+  - '&8▸ 端午龙神护符'
+  - ''
+  - '&8-------------'
+  - '&a护甲值: +12'
+  - '&a物理防御: +35'
+  - '&6✦ 荆棘反伤'
+  Enchantments:
+  - PROTECTION_ENVIRONMENTAL: 4
+  - DURABILITY: 3
+  - THORNS: 2

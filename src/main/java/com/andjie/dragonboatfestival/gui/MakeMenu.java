@@ -127,7 +127,16 @@ public class MakeMenu implements Listener {
             player.sendMessage(plugin.message("cooldown").replace("{seconds}", String.valueOf(cd)));
             return;
         }
-        craft(player, type);
+        if (event.isShiftClick()) {
+            int max = getMaxCraftable(player, type);
+            if (max <= 0) {
+                player.sendMessage(plugin.message("not-enough-materials"));
+                return;
+            }
+            craftMultiple(player, type, max);
+        } else {
+            craft(player, type);
+        }
         event.getInventory().setItem(11, createZongziItem(player, "normal", "&a普通粽子", Material.BREAD));
         event.getInventory().setItem(15, createZongziItem(player, "luxury", "&6豪华粽子", Material.CAKE));
     }
@@ -149,9 +158,64 @@ public class MakeMenu implements Listener {
         }
         plugin.getGoalManager().addProgress("make-zongzi", 1);
         plugin.getGoalManager().addProgress("make-" + type, 1);
-        player.sendMessage(plugin.message("make-" + type).replace("{points}", String.valueOf(points)));
+        player.sendMessage(plugin.message("make-" + type).replace("{points}", String.valueOf(points)).replace("{count}", "1"));
         // 给予实体粽子物品（可交易）
         ItemStack zongzi = createZongziItemStack(type);
+        Map<Integer, ItemStack> remaining = player.getInventory().addItem(zongzi);
+        for (ItemStack item : remaining.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        }
+        return true;
+    }
+
+    /**
+     * 获取玩家最多能制作多少个指定类型的粽子
+     */
+    public int getMaxCraftable(Player player, String type) {
+        Map<MaterialType, Integer> cost = makeCost(type);
+        int max = Integer.MAX_VALUE;
+        for (Map.Entry<MaterialType, Integer> entry : cost.entrySet()) {
+            int need = entry.getValue();
+            if (need <= 0) continue;
+            int has = MaterialItems.count(player, entry.getKey());
+            max = Math.min(max, has / need);
+        }
+        return max == Integer.MAX_VALUE ? 0 : max;
+    }
+
+    /**
+     * 批量制作指定数量的粽子（按住 Shift 时调用）
+     */
+    public boolean craftMultiple(Player player, String type, int count) {
+        if (count <= 0) {
+            player.sendMessage(plugin.message("not-enough-materials"));
+            return false;
+        }
+        Map<MaterialType, Integer> singleCost = makeCost(type);
+        Map<MaterialType, Integer> totalCost = new EnumMap<>(MaterialType.class);
+        for (MaterialType mt : MaterialType.values()) {
+            totalCost.put(mt, singleCost.get(mt) * count);
+        }
+        if (!MaterialItems.has(player, totalCost)) {
+            player.sendMessage(plugin.message("not-enough-materials"));
+            return false;
+        }
+        MaterialItems.take(player, totalCost);
+        PlayerData data = plugin.getPlayerDataManager().get(player);
+        int perPoints = plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi"));
+        data.addPoints(perPoints * count);
+        if ("luxury".equals(type)) {
+            data.addLuxuryMade(count);
+        } else {
+            data.addNormalMade(count);
+        }
+        plugin.getGoalManager().addProgress("make-zongzi", count);
+        plugin.getGoalManager().addProgress("make-" + type, count);
+        player.sendMessage(plugin.message("make-" + type)
+            .replace("{points}", String.valueOf(perPoints * count))
+            .replace("{count}", String.valueOf(count)));
+        ItemStack zongzi = createZongziItemStack(type);
+        zongzi.setAmount(count);
         Map<Integer, ItemStack> remaining = player.getInventory().addItem(zongzi);
         for (ItemStack item : remaining.values()) {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
@@ -193,7 +257,10 @@ public class MakeMenu implements Listener {
             lore.add(Color.text((has >= need ? "&a" : "&c") + materialType.getDisplayName() + "：" + has + "/" + need));
         }
         lore.add(Color.text(""));
-        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a材料足够，点击制作" : "&c材料不足"));
+        int max = getMaxCraftable(player, type);
+        lore.add(Color.text("&7Shift+点击 &f一次性制作全部 &e(&7最多 &f" + max + " &7个&e)"));
+        lore.add(Color.text(""));
+        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a点击制作 1 个" : "&c材料不足"));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
