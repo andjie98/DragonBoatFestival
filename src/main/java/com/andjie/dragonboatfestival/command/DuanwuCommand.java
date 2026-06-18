@@ -432,12 +432,14 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
     public void sendGuide(Player player) {
         player.sendMessage(Color.text("&a===== 端午活动新手指南 ====="));
         player.sendMessage(Color.text("&e1. 收集材料：&7挖矿/打怪拿糯米，破坏树叶拿粽叶，收作物拿红枣，杀动物拿鲜肉。"));
-        player.sendMessage(Color.text("&e2. 查看材料：&7输入 &f/duanwu materials &7确认背包里有多少端午材料。"));
-        player.sendMessage(Color.text("&e3. 制作粽子：&7输入 &f/duanwu make &7打开菜单，点击普通或豪华粽子。"));
-        player.sendMessage(Color.text("&e4. 获得积分：&7制作粽子后获得节日积分。"));
-        player.sendMessage(Color.text("&e5. 兑换奖励：&7输入 &f/duanwu shop &7用积分兑换礼包。"));
-        player.sendMessage(Color.text("&e额外玩法：&7每天 &f/duanwu sign &7签到，钓鱼可抽材料和礼包。"));
-        player.sendMessage(Color.text("&c注意：&7只有插件发放的端午材料才算，普通原版物品不能当材料。"));
+        player.sendMessage(Color.text("&e2. 查看材料：&7输入 &f/duanwu materials &7看看背包里有多少材料。"));
+        player.sendMessage(Color.text("&e3. 制作粽子：&7输入 &f/duanwu make &7打开制作面板。"));
+        player.sendMessage(Color.text("&e   ▸ &a左键点击 → 做 1 个"));
+        player.sendMessage(Color.text("&e   ▸ &e右键点击 → 材料够的话一次性全部做完"));
+        player.sendMessage(Color.text("&e4. 获得积分：&7制作粽子就能拿到节日积分。"));
+        player.sendMessage(Color.text("&e5. 兑换奖励：&7输入 &f/duanwu shop &7用积分换东西。"));
+        player.sendMessage(Color.text("&e额外玩法：&7每天 &f/duanwu sign &7签到，钓鱼也能拿到材料。"));
+        player.sendMessage(Color.text("&c注意：&7只有插件发的端午材料才算，普通原版物品不算。"));
     }
 
     public void sendFishGuide(Player player) {
@@ -454,7 +456,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         int rice = MaterialItems.count(player, MaterialType.RICE);
         int leaf = MaterialItems.count(player, MaterialType.LEAF);
         if (rice >= plugin.getConfig().getInt("make.normal.rice", 5) && leaf >= plugin.getConfig().getInt("make.normal.leaf", 2)) {
-            return "&e推荐下一步：输入 /duanwu make 制作粽子换积分。";
+            return "&e推荐下一步：输入 /duanwu make 打开制作面板，左键做1个，右键全部做完。";
         }
         if (data.getPoints() > 0) {
             return "&e推荐下一步：输入 /duanwu shop 看看能兑换什么奖励。";
@@ -469,7 +471,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Color.text("&e/duanwu status &7查看我的活动状态"));
         sender.sendMessage(Color.text("&e/duanwu points &7查看积分"));
         sender.sendMessage(Color.text("&e/duanwu materials &7查看材料"));
-        sender.sendMessage(Color.text("&e/duanwu make [normal|luxury] &7打开制作菜单或快速制作"));
+        sender.sendMessage(Color.text("&e/duanwu make &7打开制作面板（左键做1个，右键全部做完）"));
         sender.sendMessage(Color.text("&e/duanwu shop &7活动商店"));
         sender.sendMessage(Color.text("&e/duanwu sign &7每日签到"));
         sender.sendMessage(Color.text("&e/duanwu fish &7幸运摸鱼说明"));

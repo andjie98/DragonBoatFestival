@@ -206,7 +206,7 @@ public class MakeMenu implements Listener {
         }
         MaterialItems.take(player, totalCost);
         PlayerData data = plugin.getPlayerDataManager().get(player);
-        int perPoints = plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi"));
+        int perPoints = Math.max(0, plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi")));
         data.addPoints(perPoints * count);
         if ("luxury".equals(type)) {
             data.addLuxuryMade(count);
@@ -250,21 +250,23 @@ public class MakeMenu implements Listener {
         List<String> lore = new ArrayList<String>();
         Map<MaterialType, Integer> cost = makeCost(type);
         int points = plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi"));
-        lore.add(Color.text("&7点击制作，获得 &e" + points + " &7节日积分"));
-        lore.add(Color.text("&7材料需求："));
+        lore.add(Color.text("&7制作 1 个获得 &e" + points + " &7节日积分"));
+        lore.add(Color.text(""));
+        lore.add(Color.text("&e材料需求："));
         for (MaterialType materialType : MaterialType.values()) {
             int need = cost.get(materialType);
             if (need <= 0) {
                 continue;
             }
             int has = MaterialItems.count(player, materialType);
-            lore.add(Color.text((has >= need ? "&a" : "&c") + materialType.getDisplayName() + "：" + has + "/" + need));
+            lore.add(Color.text((has >= need ? "&a" : "&c") + "  " + materialType.getDisplayName() + "：" + has + "/" + need));
         }
         lore.add(Color.text(""));
         int max = getMaxCraftable(player, type);
-        lore.add(Color.text("&7右键点击 &f一次性制作全部 &e(&7最多 &f" + max + " &7个&e)"));
+        lore.add(Color.text("&a▶ 鼠标左键点击 → 制作 1 个"));
+        lore.add(Color.text("&e▶ 鼠标右键点击 → 一次性制作全部（最多 " + max + " 个）"));
         lore.add(Color.text(""));
-        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a左键制作 1 个" : "&c材料不足"));
+        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a材料充足，可以制作！" : "&c材料不足，先去收集材料吧！"));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
