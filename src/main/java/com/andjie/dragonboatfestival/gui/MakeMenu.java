@@ -127,7 +127,7 @@ public class MakeMenu implements Listener {
             player.sendMessage(plugin.message("cooldown").replace("{seconds}", String.valueOf(cd)));
             return;
         }
-        if (event.isShiftClick()) {
+        if (event.isRightClick()) {
             int max = getMaxCraftable(player, type);
             if (max <= 0) {
                 player.sendMessage(plugin.message("not-enough-materials"));
@@ -258,9 +258,9 @@ public class MakeMenu implements Listener {
         }
         lore.add(Color.text(""));
         int max = getMaxCraftable(player, type);
-        lore.add(Color.text("&7Shift+点击 &f一次性制作全部 &e(&7最多 &f" + max + " &7个&e)"));
+        lore.add(Color.text("&7右键点击 &f一次性制作全部 &e(&7最多 &f" + max + " &7个&e)"));
         lore.add(Color.text(""));
-        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a点击制作 1 个" : "&c材料不足"));
+        lore.add(Color.text(MaterialItems.has(player, cost) ? "&a左键制作 1 个" : "&c材料不足"));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
