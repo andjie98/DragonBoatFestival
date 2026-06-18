@@ -111,12 +111,12 @@ public class ActivityListener implements Listener {
             if (chance <= 0 || random.nextInt(100) >= chance) {
                 return;
             }
-            int rice = plugin.getConfig().getInt("fish-rewards.rice", 0);
-            int leaf = plugin.getConfig().getInt("fish-rewards.leaf", 0);
-            int jujube = plugin.getConfig().getInt("fish-rewards.jujube", 0);
-            int meat = plugin.getConfig().getInt("fish-rewards.meat", 0);
-            int lucky = plugin.getConfig().getInt("fish-rewards.lucky", 0);
-            int legend = plugin.getConfig().getInt("fish-rewards.legend", 0);
+            int rice = Math.max(0, plugin.getConfig().getInt("fish-rewards.rice", 0));
+            int leaf = Math.max(0, plugin.getConfig().getInt("fish-rewards.leaf", 0));
+            int jujube = Math.max(0, plugin.getConfig().getInt("fish-rewards.jujube", 0));
+            int meat = Math.max(0, plugin.getConfig().getInt("fish-rewards.meat", 0));
+            int lucky = Math.max(0, plugin.getConfig().getInt("fish-rewards.lucky", 0));
+            int legend = Math.max(0, plugin.getConfig().getInt("fish-rewards.legend", 0));
             int total = rice + leaf + jujube + meat + lucky + legend;
             if (total <= 0) {
                 return;
@@ -161,7 +161,7 @@ public class ActivityListener implements Listener {
     }
 
     private void tryGiveDrop(Player player, MaterialType type) {
-        int chance = plugin.getConfig().getInt("drop." + type.getKey(), 0);
+        int chance = Math.max(0, Math.min(100, plugin.getConfig().getInt("drop." + type.getKey(), 0)));
         if (chance > 0 && random.nextInt(100) < chance) {
             giveMaterial(player, type, 1);
         }

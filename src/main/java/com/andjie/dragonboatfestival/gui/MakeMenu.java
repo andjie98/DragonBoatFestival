@@ -249,7 +249,7 @@ public class MakeMenu implements Listener {
         meta.setDisplayName(Color.text(name));
         List<String> lore = new ArrayList<String>();
         Map<MaterialType, Integer> cost = makeCost(type);
-        int points = plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi"));
+        int points = Math.max(0, plugin.getConfig().getInt("points." + ("luxury".equals(type) ? "luxury-zongzi" : "normal-zongzi")));
         lore.add(Color.text("&7制作 1 个获得 &e" + points + " &7节日积分"));
         lore.add(Color.text(""));
         lore.add(Color.text("&e材料需求："));

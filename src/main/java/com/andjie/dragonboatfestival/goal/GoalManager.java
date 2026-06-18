@@ -74,7 +74,7 @@ public class GoalManager {
             return;
         }
         int progress = data.getInt("goals." + key + ".progress", 0) + amount;
-        int target = plugin.getConfig().getInt("server-goals." + key + ".target", 0);
+        int target = Math.max(1, plugin.getConfig().getInt("server-goals." + key + ".target", 0));
         data.set("goals." + key + ".progress", progress);
         if (target > 0 && progress >= target) {
             complete(key, target);

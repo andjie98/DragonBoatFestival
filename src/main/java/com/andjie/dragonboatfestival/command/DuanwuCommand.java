@@ -289,7 +289,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         data.setLastSign(LocalDate.now(plugin.getSignZoneId()).toString());
         data.addSignDay();
         plugin.getGoalManager().addProgress("sign", 1);
-        data.addPoints(plugin.getConfig().getInt(path + ".points", 0));
+        data.addPoints(Math.max(0, plugin.getConfig().getInt(path + ".points", 0)));
         int exp = plugin.getConfig().getInt(path + ".exp", 0);
         if (exp > 0) {
             player.giveExp(exp);
