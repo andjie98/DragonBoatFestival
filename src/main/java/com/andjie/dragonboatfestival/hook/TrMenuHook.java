@@ -46,11 +46,18 @@ public class TrMenuHook {
             return false;
         }
         try {
-            Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), "trmenu open " + menuId + " " + player.getName());
+            // 优先使用玩家身份打开菜单，确保 TrMenu/PlaceholderAPI 以该玩家作为变量上下文。
+            // 否则主页由控制台打开时，部分变量可能按控制台/默认上下文解析为 0。
+            Bukkit.dispatchCommand(player, "trmenu open " + menuId);
             return true;
         } catch (Throwable throwable) {
-            plugin.getLogger().warning("打开 TrMenu 菜单失败(" + menuId + "): " + throwable.getMessage());
-            return false;
+            try {
+                Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), "trmenu open " + menuId + " " + player.getName());
+                return true;
+            } catch (Throwable fallbackThrowable) {
+                plugin.getLogger().warning("打开 TrMenu 菜单失败(" + menuId + "): " + fallbackThrowable.getMessage());
+                return false;
+            }
         }
     }
 
