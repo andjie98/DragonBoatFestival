@@ -4,13 +4,12 @@ import com.andjie.dragonboatfestival.boss.BossManager;
 import com.andjie.dragonboatfestival.command.DuanwuCommand;
 import com.andjie.dragonboatfestival.data.PlayerDataManager;
 import com.andjie.dragonboatfestival.goal.GoalManager;
-import com.andjie.dragonboatfestival.gui.MainMenu;
-import com.andjie.dragonboatfestival.gui.MakeMenu;
-import com.andjie.dragonboatfestival.gui.ShopMenu;
 import com.andjie.dragonboatfestival.hook.PlaceholderAPIHook;
 import com.andjie.dragonboatfestival.hook.TrMenuHook;
 import com.andjie.dragonboatfestival.hook.VaultHook;
 import com.andjie.dragonboatfestival.listener.ActivityListener;
+import com.andjie.dragonboatfestival.service.ShopService;
+import com.andjie.dragonboatfestival.service.ZongziService;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,9 +21,8 @@ import java.time.ZoneId;
 public class DragonBoatFestivalPlugin extends JavaPlugin {
 
     private PlayerDataManager playerDataManager;
-    private ShopMenu shopMenu;
-    private MakeMenu makeMenu;
-    private MainMenu mainMenu;
+    private ShopService shopService;
+    private ZongziService zongziService;
     private GoalManager goalManager;
     private BossManager bossManager;
     private DuanwuCommand duanwuCommand;
@@ -47,17 +45,14 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         playerDataManager.loadOnlinePlayers();
         goalManager = new GoalManager(this);
         bossManager = new BossManager(this);
-        shopMenu = new ShopMenu(this);
-        makeMenu = new MakeMenu(this);
-        mainMenu = new MainMenu(this);
+        shopService = new ShopService(this);
+        zongziService = new ZongziService(this);
 
         duanwuCommand = new DuanwuCommand(this);
         getCommand("duanwu").setExecutor(duanwuCommand);
         getCommand("duanwu").setTabCompleter(duanwuCommand);
         getServer().getPluginManager().registerEvents(new ActivityListener(this), this);
-        getServer().getPluginManager().registerEvents(shopMenu, this);
-        getServer().getPluginManager().registerEvents(makeMenu, this);
-        getServer().getPluginManager().registerEvents(mainMenu, this);
+        getServer().getPluginManager().registerEvents(zongziService, this);
 
         placeholderAPIHook = new PlaceholderAPIHook(this);
         trMenuHook = new TrMenuHook(this);
@@ -106,7 +101,7 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         if (trMenuHook != null) {
             trMenuHook.reload();
         }
-        shopMenu.reload();
+        shopService.reload();
         goalManager.reload();
     }
 
@@ -122,16 +117,12 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
         return bossManager;
     }
 
-    public ShopMenu getShopMenu() {
-        return shopMenu;
+    public ShopService getShopService() {
+        return shopService;
     }
 
-    public MakeMenu getMakeMenu() {
-        return makeMenu;
-    }
-
-    public MainMenu getMainMenu() {
-        return mainMenu;
+    public ZongziService getZongziService() {
+        return zongziService;
     }
 
     public DuanwuCommand getDuanwuCommand() {
@@ -151,20 +142,20 @@ public class DragonBoatFestivalPlugin extends JavaPlugin {
     }
 
     public void openMainMenu(org.bukkit.entity.Player player) {
-        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.MAIN_MENU)) {
-            mainMenu.open(player);
-        }
+        openTrMenu(player, TrMenuHook.MAIN_MENU);
     }
 
     public void openMakeMenu(org.bukkit.entity.Player player) {
-        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.MAKE_MENU)) {
-            makeMenu.open(player);
-        }
+        openTrMenu(player, TrMenuHook.MAKE_MENU);
     }
 
     public void openShopMenu(org.bukkit.entity.Player player) {
-        if (trMenuHook == null || !trMenuHook.open(player, TrMenuHook.SHOP_MENU)) {
-            shopMenu.open(player);
+        openTrMenu(player, TrMenuHook.SHOP_MENU);
+    }
+
+    private void openTrMenu(org.bukkit.entity.Player player, String menuId) {
+        if (trMenuHook == null || !trMenuHook.open(player, menuId)) {
+            player.sendMessage(Color.text("&c端午活动菜单需要安装并启用 TrMenu。"));
         }
     }
 

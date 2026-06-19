@@ -268,14 +268,15 @@ public class TrMenuHook {
             + "        - '&a糯米：&e%duanwu_rice%&7/" + normalRice + "'\n"
             + "        - '&a粽叶：&e%duanwu_leaf%&7/" + normalLeaf + "'\n"
             + "        - ''\n"
-            + "        - '&e点击打开制作面板'\n"
-            + "        - '&7在制作面板里：'\n"
-            + "        - '&a  左键 → 做 1 个'\n"
-            + "        - '&e  右键 → 全部做完'\n"
+            + "        - '&a左键 → 做 1 个'\n"
+            + "        - '&e右键 → 全部做完'\n"
             + "    actions:\n"
-            + "      all:\n"
-            + "        - close\n"
-            + "        - 'command: duanwu make'\n"
+            + "      left:\n"
+            + "        - 'command: duanwu make normal'\n"
+            + "        - 'sound: ENTITY_PLAYER_LEVELUP-1-1'\n"
+            + "      right:\n"
+            + "        - 'command: duanwu make normal all'\n"
+            + "        - 'sound: ENTITY_PLAYER_LEVELUP-1-1'\n"
             + "\n"
             + "  B:\n"
             + "    display:\n"
@@ -290,14 +291,15 @@ public class TrMenuHook {
             + "        - '&6红枣：&e%duanwu_jujube%&7/" + luxuryJujube + "'\n"
             + "        - '&6鲜肉：&e%duanwu_meat%&7/" + luxuryMeat + "'\n"
             + "        - ''\n"
-            + "        - '&e点击打开制作面板'\n"
-            + "        - '&7在制作面板里：'\n"
-            + "        - '&a  左键 → 做 1 个'\n"
-            + "        - '&e  右键 → 全部做完'\n"
+            + "        - '&a左键 → 做 1 个'\n"
+            + "        - '&e右键 → 全部做完'\n"
             + "    actions:\n"
-            + "      all:\n"
-            + "        - close\n"
-            + "        - 'command: duanwu make'\n"
+            + "      left:\n"
+            + "        - 'command: duanwu make luxury'\n"
+            + "        - 'sound: ENTITY_PLAYER_LEVELUP-1-1'\n"
+            + "      right:\n"
+            + "        - 'command: duanwu make luxury all'\n"
+            + "        - 'sound: ENTITY_PLAYER_LEVELUP-1-1'\n"
             + "\n"
             + "  C:\n"
             + "    display:\n"
@@ -366,7 +368,7 @@ public class TrMenuHook {
         int index = 0;
         for (String ignored : section.getKeys(false)) {
             if (index >= candidates.length()) {
-                plugin.getLogger().warning("TrMenu 商店模板最多显示 " + candidates.length() + " 个商品，超出的商品仅在内置 GUI 中显示。");
+                plugin.getLogger().warning("TrMenu 商店模板最多显示 " + candidates.length() + " 个商品，超出的商品不会显示在菜单中。");
                 break;
             }
             icons.add(Character.valueOf(candidates.charAt(index)));

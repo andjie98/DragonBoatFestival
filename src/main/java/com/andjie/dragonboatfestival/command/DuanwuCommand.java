@@ -126,7 +126,10 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             return filter(Arrays.asList("spawn"), args[1]);
         }
         if (args.length == 2 && "buy".equalsIgnoreCase(args[0])) {
-            return filter(plugin.getShopMenu().keys(), args[1]);
+            return filter(plugin.getShopService().keys(), args[1]);
+        }
+        if (args.length == 3 && "make".equalsIgnoreCase(args[0])) {
+            return filter(Arrays.asList("all"), args[2]);
         }
         if (args.length == 3 && "give".equalsIgnoreCase(args[0])) {
             return filter(Arrays.asList("rice", "leaf", "jujube", "meat"), args[2]);
@@ -247,7 +250,12 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         if (!checkMakeCooldown(player)) {
             return true;
         }
-        plugin.getMakeMenu().craft(player, type);
+        if (args.length >= 3 && "all".equalsIgnoreCase(args[2])) {
+            int max = plugin.getZongziService().getMaxCraftable(player, type);
+            plugin.getZongziService().craftMultiple(player, type, max);
+            return true;
+        }
+        plugin.getZongziService().craft(player, type);
         return true;
     }
 
@@ -270,7 +278,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Color.text("&c用法：/duanwu buy 商品ID"));
             return true;
         }
-        plugin.getShopMenu().buy(player, args[1], false);
+        plugin.getShopService().buy(player, args[1]);
         return true;
     }
 
@@ -433,7 +441,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(Color.text("&a===== 端午活动新手指南 ====="));
         player.sendMessage(Color.text("&e1. 收集材料：&7挖矿/打怪拿糯米，破坏树叶拿粽叶，收作物拿红枣，杀动物拿鲜肉。"));
         player.sendMessage(Color.text("&e2. 查看材料：&7输入 &f/duanwu materials &7看看背包里有多少材料。"));
-        player.sendMessage(Color.text("&e3. 制作粽子：&7输入 &f/duanwu make &7打开制作面板。"));
+        player.sendMessage(Color.text("&e3. 制作粽子：&7输入 &f/duanwu make &7打开 TrMenu 制作菜单。"));
         player.sendMessage(Color.text("&e   ▸ &a左键点击 → 做 1 个"));
         player.sendMessage(Color.text("&e   ▸ &e右键点击 → 材料够的话一次性全部做完"));
         player.sendMessage(Color.text("&e4. 获得积分：&7制作粽子就能拿到节日积分。"));
@@ -456,7 +464,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         int rice = MaterialItems.count(player, MaterialType.RICE);
         int leaf = MaterialItems.count(player, MaterialType.LEAF);
         if (rice >= plugin.getConfig().getInt("make.normal.rice", 5) && leaf >= plugin.getConfig().getInt("make.normal.leaf", 2)) {
-            return "&e推荐下一步：输入 /duanwu make 打开制作面板，左键做1个，右键全部做完。";
+            return "&e推荐下一步：输入 /duanwu make 打开 TrMenu 制作菜单，左键做1个，右键全部做完。";
         }
         if (data.getPoints() > 0) {
             return "&e推荐下一步：输入 /duanwu shop 看看能兑换什么奖励。";
@@ -471,7 +479,7 @@ public class DuanwuCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Color.text("&e/duanwu status &7查看我的活动状态"));
         sender.sendMessage(Color.text("&e/duanwu points &7查看积分"));
         sender.sendMessage(Color.text("&e/duanwu materials &7查看材料"));
-        sender.sendMessage(Color.text("&e/duanwu make &7打开制作面板（左键做1个，右键全部做完）"));
+        sender.sendMessage(Color.text("&e/duanwu make &7打开 TrMenu 制作菜单（左键做1个，右键全部做完）"));
         sender.sendMessage(Color.text("&e/duanwu shop &7活动商店"));
         sender.sendMessage(Color.text("&e/duanwu sign &7每日签到"));
         sender.sendMessage(Color.text("&e/duanwu fish &7幸运摸鱼说明"));
