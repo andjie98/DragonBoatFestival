@@ -5,6 +5,7 @@ import com.andjie.dragonboatfestival.data.MaterialItems;
 import com.andjie.dragonboatfestival.data.MaterialType;
 import com.andjie.dragonboatfestival.data.PlayerData;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -59,22 +60,20 @@ public class DuanwuExpansion extends PlaceholderExpansion {
         }
         String param = params.toLowerCase();
 
+        Player onlinePlayer = player instanceof Player ? (Player) player : Bukkit.getPlayer(player.getUniqueId());
+
         // 材料类：依赖在线背包，离线玩家返回空。
         if (isMaterialPlaceholder(param)) {
-            if (!(player instanceof Player)) {
+            if (onlinePlayer == null) {
                 return "";
             }
-            Player online = (Player) player;
-            return resolveMaterial(online, param);
+            return resolveMaterial(onlinePlayer, param);
         }
 
-        // 统计类：在线离线均可读取。
+        // 统计类：玩家在线时必须读取内存数据，避免 TrMenu/PAPI 传 OfflinePlayer 包装对象时读到未保存文件而显示 0。
         PlayerData data;
-        if (player instanceof Player) {
-            data = plugin.getPlayerDataManager().getIfLoaded((Player) player);
-            if (data == null) {
-                data = plugin.getPlayerDataManager().getOrLoad(player);
-            }
+        if (onlinePlayer != null) {
+            data = plugin.getPlayerDataManager().get(onlinePlayer);
         } else {
             data = plugin.getPlayerDataManager().getOrLoad(player);
         }
