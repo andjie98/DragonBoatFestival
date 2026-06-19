@@ -134,6 +134,7 @@ public class TrMenuHook {
             + "      name: '&r'\n"
             + "\n"
             + "  S:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: BOOK\n"
             + "      name: '&a我的活动状态'\n"
@@ -152,6 +153,7 @@ public class TrMenuHook {
             + "        - 'command: duanwu status'\n"
             + "\n"
             + "  M:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: WORKBENCH\n"
             + "      name: '&e制作粽子'\n"
@@ -166,6 +168,7 @@ public class TrMenuHook {
             + "        - 'sound: BLOCK_NOTE_PLING-1-1'\n"
             + "\n"
             + "  K:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: EMERALD\n"
             + "      name: '&6活动商店'\n"
@@ -180,6 +183,7 @@ public class TrMenuHook {
             + "        - 'sound: BLOCK_NOTE_PLING-1-1'\n"
             + "\n"
             + "  G:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: SIGN\n"
             + "      name: '&b每日签到'\n"
@@ -194,6 +198,7 @@ public class TrMenuHook {
             + "        - 'command: duanwu sign'\n"
             + "\n"
             + "  L:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: FISHING_ROD\n"
             + "      name: '&3幸运摸鱼'\n"
@@ -265,6 +270,7 @@ public class TrMenuHook {
             + "      name: '&r'\n"
             + "\n"
             + "  A:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: BREAD\n"
             + "      name: '&a普通粽子'\n"
@@ -286,6 +292,7 @@ public class TrMenuHook {
             + "        - 'sound: ENTITY_PLAYER_LEVELUP-1-1'\n"
             + "\n"
             + "  B:\n"
+            + "    update: 20\n"
             + "    display:\n"
             + "      material: CAKE\n"
             + "      name: '&6豪华粽子'\n"
@@ -339,6 +346,7 @@ public class TrMenuHook {
         yaml.append("      material: STAINED_GLASS_PANE:1\n");
         yaml.append("      name: '&r'\n\n");
         yaml.append("  P:\n");
+        yaml.append("    update: 20\n");
         yaml.append("    display:\n");
         yaml.append("      material: EMERALD\n");
         yaml.append("      name: '&6我的积分'\n");
